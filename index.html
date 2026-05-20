@@ -89,7 +89,14 @@
 
         #risultato {
             text-align: center;
+            background-color: #507f46;
+            color: white;
+            padding: 10px;
+            display: none;
         }
+
+
+
     </style>
 
     <script type="application/javascript">
@@ -157,7 +164,9 @@
                 calcolaCodiceFiscale();
             }
             else {
-                document.getElementById("risultato").innerHTML = "Inserisci tutti i dati!";
+                const risposta = document.getElementById("risultato");
+                risposta.innerHTML = "Inserisci tutti i dati!";
+                risposta.style.display = "block";
             }
         }
 
@@ -240,7 +249,9 @@
 
             let resto = somma % 26;
             let carattereControllo = String.fromCharCode(65 + resto); // 65 è il codice ASCII di 'A'
-            document.getElementById("risultato").innerHTML = "<h4>CODICE FISCALE</h4>" + parziale + carattereControllo;
+            const risposta = document.getElementById("risultato");
+            risposta.innerHTML = "<h4>CODICE FISCALE</h4>" + parziale + carattereControllo;
+            risposta.style.display = "block";
         }
 
 
@@ -328,11 +339,11 @@
     <form id="form" action="#risultato">
         <fieldset>
             <h3>Calcola Codice Fiscale</h3>
-            <label for="nome">Nome <span>*</span></label>
+            <label for="nome">Nome</label>
             <input type="text" id="nome" placeholder="Nome">
-            <label for="cognome">Cognome <span>*</span></label>
+            <label for="cognome">Cognome</label>
             <input type="text" id="cognome" placeholder="Cognome">
-            <label for="dataNascita">Data di nascita <span>*</span></label>
+            <label for="dataNascita">Data di nascita</label>
             <input type="date" id="dataNascita" placeholder="Scegli">
             <label for="sesso">Genere</label>
             <select id="sesso">
@@ -340,15 +351,15 @@
                 <option value="M">Maschio</option>
                 <option value="F">Femmina</option>
             </select>
-            <label for="regioniSelect">Regione di nascita <span>*</span></label>
+            <label for="regioniSelect">Regione di nascita</label>
             <select id="regioniSelect">
                 <option value="" disabled selected>Scegli</option>
             </select>
-            <label for="provinceSelect">Provincia di nascita <span>*</span></label>
+            <label for="provinceSelect">Provincia di nascita</label>
             <select id="provinceSelect">
                 <option value="" disabled selected>Scegli</option>
             </select>
-            <label for="comuniSelect">Comune di nascita <span>*</span></label>
+            <label for="comuniSelect">Comune di nascita</label>
             <select id="comuniSelect">
                 <option value="" disabled selected>Scegli</option>
             </select>
