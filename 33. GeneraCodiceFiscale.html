@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genera Codice Fiscale</title>
+    <style>
+        body {
+            background-color: #b0ff9e;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        form,
+        p {
+            margin: 20px auto;
+            width: max-content;
+        }
+
+        fieldset {
+            background-color: #8dc181;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            border-radius: 10px;
+            border: 15px solid #507f46;
+            color: #262626;
+        }
+
+        h3 {
+            margin-top: 0;
+            background-color: #507f46;
+            padding: 20px;
+            border-radius: 5px;
+            color: #e9e9e9;
+        }
+
+        label {
+            align-self: flex-start;
+        }
+
+        input,
+        select,
+        button {
+            width: 40vw;
+            height: 30px;
+            border-radius: 5px;
+            outline: none;
+            border: none;
+            padding-inline: 5px;
+            color: #262626;
+        }
+
+        button {
+            color: white;
+            background-color: #507f46;
+        }
+
+
+
+        input:hover,
+        select:hover,
+        input:focus,
+        select:focus,
+        input:hover::placeholder,
+        input:focus::placeholder {
+            background-color: #507f46;
+            color: white;
+        }
+
+        button:hover{
+            background-color: #375730;
+        }
+
+        input::placeholder {
+            color: #222;
+        }
+
+
+
+
+        .errore {
+            color: red;
+        }
+
+        #risultato {
+            text-align: center;
+        }
+    </style>
+
+    <script type="application/javascript">
+
+        let datiComuni = [];
+        var risultato;
+
+        function validaForm() {
+            // Resetto gli errori
+            const inputErrati = document.querySelectorAll(".errore");
+            inputErrati.forEach(inputErrato => {
+                inputErrato.classList.remove("errore");
+            });
+            // Imposto variabile di validaione (se rimane 0 sono tutti validi)
+            let valido = 0;
+
+            // Valido nome
+            const nome = document.getElementById("nome").value;
+            if (nome == "" || nome.length > 25) {
+                document.getElementById("nome").labels[0].classList.add("errore"); //aggiungo la classe errore alla label dell'input non valido
+                valido++;
+            };
+
+
+            const cognome = document.getElementById("cognome").value;
+            if (cognome == "" || cognome.length > 25) {
+                document.getElementById("cognome").labels[0].classList.add("errore"); //aggiungo la classe errore alla label dell'input non valido
+                valido++;
+            };
+
+            const dataNascita = document.getElementById("dataNascita").value;
+            const dataOggi = new Date().toISOString().split('T')[0];
+            if (dataNascita == "" || dataNascita > dataOggi) {
+                document.getElementById("dataNascita").labels[0].classList.add("errore"); //aggiungo la classe errore alla label dell'input non valido
+                valido++;
+            };
+
+            const genere = document.getElementById('sesso').value;
+            if (genere != "M" && genere != "F") {
+                document.getElementById("sesso").labels[0].classList.add("errore"); //aggiungo la classe errore alla label dell'input non valido
+                valido++;
+            }
+
+            const regioneNascita = document.getElementById("regioniSelect").value;
+            if (regioneNascita == "") {
+                document.getElementById("regioniSelect").labels[0].classList.add("errore"); //aggiungo la classe errore alla label dell'input non valido
+                valido++;
+            };
+
+            const provinciaNascita = document.getElementById("provinceSelect").value;
+            if (provinciaNascita == "") {
+                document.getElementById("provinceSelect").labels[0].classList.add("errore"); //aggiungo la classe errore alla label dell'input non valido
+                valido++;
+            };
+
+            const comuneNascita = document.getElementById("comuniSelect").value;
+            if (comuneNascita == "") {
+                document.getElementById("comuniSelect").labels[0].classList.add("errore"); //aggiungo la classe errore alla label dell'input non valido
+                valido++;
+            };
+
+            valido = valido == 0 ? true : false;
+
+            if (valido) {
+                calcolaCodiceFiscale();
+            }
+            else {
+                document.getElementById("risultato").innerHTML = "Inserisci tutti i dati!";
+            }
+        }
+
+
+        function calcolaCodiceFiscale() {
+            document.getElementById("risultato").innerHTML = "";
+            let nome = document.getElementById("nome").value.toUpperCase().replace(/[^A-Z]/g, '');
+            let cognome = document.getElementById("cognome").value.toUpperCase().replace(/[^A-Z]/g, '');
+
+            function estraiConsonanti(testo) {
+                return testo.replace(/[AEIOU]/g, '');
+            }
+
+            function estraiVocali(testo) {
+                return testo.replace(/[^AEIOU]/g, '');
+            }
+
+            // --- COGNOME ---
+            let consonantiCognome = estraiConsonanti(cognome);
+            let vocaliCognome = estraiVocali(cognome);
+            let codiceCognome = (consonantiCognome + vocaliCognome + 'XXX').substring(0, 3);
+
+            // --- NOME ---
+            let consonantiNome = estraiConsonanti(nome);
+            let vocaliNome = estraiVocali(nome);
+            // Se le consonanti sono più di 3, prendiamo la 1a, 3a e 4a
+            if (consonantiNome.length > 3) {
+                consonantiNome = consonantiNome[0] + consonantiNome[2] + consonantiNome[3];
+            }
+            let codiceNome = (consonantiNome + vocaliNome + 'XXX').substring(0, 3);
+
+            // --- DATA E SESSO ---
+            let dataNascita = document.getElementById("dataNascita").value;
+            const parti = dataNascita.split("-"); // Divide la stringa in un array
+            const anno = parti[0];  // "1995"
+            const mese = parti[1];  // "05"
+            const giorno = parti[2]; // "20"
+            let annoCodice = anno.slice(-2);
+            let meseCodice = ['A', 'B', 'C', 'D', 'E', 'H', 'L', 'M', 'P', 'R', 'S', 'T'][mese - 1];
+
+            let giornoCodice = parseInt(giorno);
+            if (document.getElementById("sesso").value === 'F') {
+                giornoCodice += 40;
+            }
+            let giornoStr = giornoCodice < 10 ? '0' + giornoCodice : giornoCodice;
+
+            // --- CODICE CATASTALE ---
+            // Supponendo che il comune sia selezionato in 'comuniSelect' 
+            // e che tu abbia salvato il codice catastale in datiComuni
+            let comuneScelto = document.getElementById("comuniSelect").value;
+            let rigaComune = datiComuni.find(r => r[2] === comuneScelto); // r[2] è il nome comune
+            let codiceCatastale = rigaComune ? rigaComune[3] : "Z000";
+
+            // --- CARATTERE DI CONTROLLO ---
+            let parziale = codiceCognome + codiceNome + annoCodice + meseCodice + giornoStr + codiceCatastale.toUpperCase();
+
+            let charPari = {
+                '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
+                'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9,
+                'K': 10, 'L': 11, 'M': 12, 'N': 13, 'O': 14, 'P': 15, 'Q': 16, 'R': 17, 'S': 18,
+                'T': 19, 'U': 20, 'V': 21, 'W': 22, 'X': 23, 'Y': 24, 'Z': 25
+            };
+
+            let charDisp = {
+                '0': 1, '1': 0, '2': 5, '3': 7, '4': 9, '5': 13, '6': 15, '7': 17, '8': 19, '9': 21,
+                'A': 1, 'B': 0, 'C': 5, 'D': 7, 'E': 9, 'F': 13, 'G': 15, 'H': 17, 'I': 19, 'J': 21,
+                'K': 2, 'L': 4, 'M': 18, 'N': 20, 'O': 11, 'P': 3, 'Q': 6, 'R': 8, 'S': 12, 'T': 14,
+                'U': 16, 'V': 10, 'W': 22, 'X': 25, 'Y': 24, 'Z': 23
+            };
+
+            let somma = 0;
+            for (let i = 0; i < 15; i++) {
+                let char = parziale[i];
+                if (i % 2 === 0) { // Indice dispari (1, 3, 5... nell'array da 0) -> posizione dispari per l'algoritmo
+                    somma += charDisp[char];
+                } else { // Indice pari -> posizione pari
+                    somma += charPari[char];
+                }
+            }
+
+            let resto = somma % 26;
+            let carattereControllo = String.fromCharCode(65 + resto); // 65 è il codice ASCII di 'A'
+            document.getElementById("risultato").innerHTML = "<h4>CODICE FISCALE</h4>" + parziale + carattereControllo;
+        }
+
+
+        async function caricaDati() {
+            // 1. Scarica il file
+            const csv = await fetch('33. ComuniItaliani.csv');
+            // 2. Trasforma il contenuto in testo
+            const testo = await csv.text();
+            // 3. Elabora i dati (trasformandoli in righe e colonne)
+            const righe = testo.split('\n').map(riga => riga.split(','));
+            for (let i = 0; i < righe.length - 1; i++) {
+                datiComuni[i] = [righe[i][2], righe[i][3], righe[i][4], righe[i][1], righe[i][6]];
+                datiComuni[i][1] == "" ? datiComuni[i].splice(1, 1) : datiComuni[i].splice(2, 1);
+            }
+            caricaRegioni();
+        }
+
+        function caricaRegioni() {
+            let arr = [];
+            arr.push(datiComuni[0][0]);
+            for (let i = 1; i < datiComuni.length; i++) {
+                if (datiComuni[i - 1][0] != datiComuni[i][0]) {
+                    arr.push(datiComuni[i][0]);
+                }
+            }
+            const regioniOrdinate = arr.sort();
+            for (let regione in regioniOrdinate) {
+                const opt = document.createElement("option");
+                opt.textContent = regioniOrdinate[regione];
+                opt.value = regioniOrdinate[regione];
+                regioniSelect.appendChild(opt);
+            };
+            regioniSelect.addEventListener("change", aggiornaProvince);
+        }
+
+        function aggiornaProvince() {
+            provinceSelect.innerHTML = '<option value="" disabled selected>Scegli</option>';
+            comuniSelect.innerHTML = '<option value="" disabled selected>Scegli</option>';
+            let arr = [];
+            for (let i = 0; i < datiComuni.length; i++) {
+                if (datiComuni[i][0] == regioniSelect.value && datiComuni[i + 1][1] != datiComuni[i][1]) {
+                    arr.push(datiComuni[i][1]);
+                }
+            }
+            const provinceOrdinate = arr.sort();
+            for (let provincia in provinceOrdinate) {
+                provinceSelect.add(new Option(provinceOrdinate[provincia], provinceOrdinate[provincia]));
+            };
+            provinceSelect.addEventListener("change", aggiornaComuni);
+        }
+
+        function aggiornaComuni() {
+            comuniSelect.innerHTML = '<option value="" disabled selected>Scegli</option>';
+            let arr = [];
+            for (let i = 0; i < datiComuni.length; i++) {
+                if (datiComuni[i][1] == provinceSelect.value &&
+                    datiComuni[i + 1][2] != datiComuni[i][2]) {
+                    arr.push(datiComuni[i][2]);
+                }
+            }
+            const comuniOrdinati = arr.sort();
+            for (let provincia in comuniOrdinati) {
+                comuniSelect.add(new Option(comuniOrdinati[provincia], comuniOrdinati[provincia]));
+            };
+        }
+
+
+
+
+
+        window.onload = function () {
+            const regioniSelect = document.getElementById("regioniSelect");
+            const provinceSelect = document.getElementById("provinceSelect");
+            const comuniSelect = document.getElementById("comuniSelect");
+            const risultato = document.getElementById("risultato");
+            caricaDati();
+        }
+
+
+
+    </script>
+</head>
+
+<body>
+    <form id="form">
+        <fieldset>
+            <h3>Calcola Codice Fiscale</h3>
+            <label for="nome">Nome <span>*</span></label>
+            <input type="text" id="nome" placeholder="Nome">
+            <label for="cognome">Cognome <span>*</span></label>
+            <input type="text" id="cognome" placeholder="Cognome">
+            <label for="dataNascita">Data di nascita <span>*</span></label>
+            <input type="date" id="dataNascita">
+            <label for="sesso">Genere</label>
+            <select id="sesso">
+                <option value="" selected disabled>Scegli</option>
+                <option value="M">Maschio</option>
+                <option value="F">Femmina</option>
+            </select>
+            <label for="regioniSelect">Regione di nascita <span>*</span></label>
+            <select id="regioniSelect">
+                <option value="" disabled selected>Scegli</option>
+            </select>
+            <label for="provinceSelect">Provincia di nascita <span>*</span></label>
+            <select id="provinceSelect">
+                <option value="" disabled selected>Scegli</option>
+            </select>
+            <label for="comuniSelect">Comune di nascita <span>*</span></label>
+            <select id="comuniSelect">
+                <option value="" disabled selected>Scegli</option>
+            </select>
+            <br>
+            <button type="button" onclick="validaForm()">Calcola Codice Fiscale</button>
+        </fieldset>
+    </form>
+    <p id="risultato"></p>
+</body>
+
+</html>
