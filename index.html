@@ -170,15 +170,15 @@
                 risposta.innerHTML = "Inserisci tutti i dati!";
                 risposta.style.display = "block";
                 risposta.scrollIntoView({
-                behavior: 'smooth', // 'smooth' per un effetto fluido, 'instant' per scatto immediato
-                block: 'start'
-            });
+                    behavior: 'smooth', // 'smooth' per un effetto fluido, 'instant' per scatto immediato
+                    block: 'start'
+                });
             }
         }
 
 
         function calcolaCodiceFiscale() {
-            
+
             document.getElementById("risultato").innerHTML = "";
             let nome = document.getElementById("nome").value.toUpperCase().replace(/[^A-Z]/g, '');
             let cognome = document.getElementById("cognome").value.toUpperCase().replace(/[^A-Z]/g, '');
@@ -355,7 +355,8 @@
             <label for="cognome">Cognome</label>
             <input type="text" id="cognome" placeholder="Cognome">
             <label for="dataNascita">Data di nascita</label>
-            <input type="date" id="dataNascita" placeholder="Scegli">
+            <input id="dataNascita" type="text" placeholder="Scegli" onfocus="(this.type='date')"
+                onblur="if(!this.value)this.type='text'">
             <label for="sesso">Genere</label>
             <select id="sesso">
                 <option value="" selected disabled>Scegli</option>
