@@ -72,7 +72,7 @@
             color: white;
         }
 
-        button:hover{
+        button:hover {
             background-color: #375730;
         }
 
@@ -80,7 +80,7 @@
             color: #222;
         }
 
-        h4{
+        h4 {
             margin-top: 0;
         }
 
@@ -98,15 +98,13 @@
             padding: 10px;
             display: none;
         }
-
-
-
     </style>
 
     <script type="application/javascript">
 
         let datiComuni = [];
         var risultato;
+
 
         function validaForm() {
             // Resetto gli errori
@@ -176,6 +174,7 @@
 
 
         function calcolaCodiceFiscale() {
+            
             document.getElementById("risultato").innerHTML = "";
             let nome = document.getElementById("nome").value.toUpperCase().replace(/[^A-Z]/g, '');
             let cognome = document.getElementById("cognome").value.toUpperCase().replace(/[^A-Z]/g, '');
@@ -256,6 +255,10 @@
             const risposta = document.getElementById("risultato");
             risposta.innerHTML = "<h4>CODICE FISCALE</h4>" + parziale + carattereControllo;
             risposta.style.display = "block";
+            risposta.scrollIntoView({
+                behavior: 'smooth', // 'smooth' per un effetto fluido, 'instant' per scatto immediato
+                block: 'start'
+            });
         }
 
 
@@ -340,7 +343,7 @@
 </head>
 
 <body>
-    <form id="form" action="#risultato">
+    <form id="form">
         <fieldset>
             <h3>Calcola Codice Fiscale</h3>
             <label for="nome">Nome</label>
@@ -368,7 +371,7 @@
                 <option value="" disabled selected>Scegli</option>
             </select>
             <br>
-            <button type="submit" onclick="validaForm()">Calcola Codice Fiscale</button>
+            <button type="button" onclick="validaForm()">Calcola Codice Fiscale</button>
         </fieldset>
     </form>
     <p id="risultato"></p>
