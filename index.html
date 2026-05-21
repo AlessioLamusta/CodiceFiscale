@@ -169,6 +169,10 @@
                 const risposta = document.getElementById("risultato");
                 risposta.innerHTML = "Inserisci tutti i dati!";
                 risposta.style.display = "block";
+                risposta.scrollIntoView({
+                behavior: 'smooth', // 'smooth' per un effetto fluido, 'instant' per scatto immediato
+                block: 'start'
+            });
             }
         }
 
